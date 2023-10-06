@@ -1,0 +1,13 @@
+
+Existing unit tests for this project are available in the file `tests/test_managers.py` and they use Django's built-in testing framework. The existing tests already cover some of the methods in `SubscriptionManager` and `TransferManager`. However, no tests are found for `StripeModelManager` and `ChargeManager`. Therefore, the plan will focus on writing tests for these two managers.
+
+Plan:
+1) Import the necessary libraries and modules. You will need `django.test.TestCase` for creating test cases, `unittest.mock.patch` for mocking, `djstripe.models` for the models and their managers, and `decimal` for decimal operations.
+2) Create a new test case class for `StripeModelManager`. Since this manager currently doesn't have any additional methods, you only need to test its instantiation.
+3) Inside the test case class for `StripeModelManager`, write a test method to check if an instance of `StripeModelManager` can be created successfully.
+4) Create a new test case class for `ChargeManager`. This manager has two methods: `during` and `paid_totals_for`.
+5) Inside the test case class for `ChargeManager`, write a test method for `during`. You can create some `Charge` instances with different `created` dates, and then check if this method can correctly filter out the charges between a certain time range.
+6) Inside the test case class for `ChargeManager`, write a test method for `paid_totals_for`. You can create some paid `Charge` instances with different `created` dates and amounts, and then check if this method can correctly aggregate the total amount, fee, and refunded amount of paid charges during a certain year and month.
+7) Run the unit tests and fix any issues that arise.
+
+File Changes: ["tests/test_managers.py"]
