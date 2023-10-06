@@ -307,3 +307,41 @@ class ChargeManagerTest(TestCase):
             paid_totals["total_refunded"],
             "Total amount refunded is not correct.",
         )
+import decimal
+from django.test import TestCase
+from djstripe.models import Charge, StripeModelManager
+from unittest.mock import patch
+
+
+class StripeModelManagerTest(TestCase):
+    def test_instantiation(self):
+        """Test if an instance of StripeModelManager can be created successfully."""
+        manager = StripeModelManager()
+        self.assertIsInstance(manager, StripeModelManager)
+
+
+class ChargeManagerTest(TestCase):
+    def setUp(self):
+        self.charge1 = Charge.objects.create(
+            id='ch_1',
+            created=datetime.datetime(2021, 1, 1),
+            amount=decimal.Decimal('10.00'),
+            paid=True
+        )
+        self.charge2 = Charge.objects.create(
+            id='ch_2',
+            created=datetime.datetime(2021, 2, 1),
+            amount=decimal.Decimal('20.00'),
+            paid=True
+        )
+
+    def test_during(self):
+        """Test if the during method can correctly filter out the charges between a certain time range."""
+        charges = Charge.objects.during(2021, 1)
+        self.assertIn(self.charge1, charges)
+        self.assertNotIn(self.charge2, charges)
+
+    def test_paid_totals_for(self):
+        """Test if the paid_totals_for method can correctly aggregate the total amount of paid charges during a certain year and month."""
+        totals = Charge.objects.paid_totals_for(2021, 1)
+        self.assertEqual(totals['total_amount'], decimal.Decimal('10.00'))
